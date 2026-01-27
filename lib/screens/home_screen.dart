@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/news_api_service.dart';
+import '../widgets/app_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,11 +17,9 @@ class HomeScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          else if (snapshot.hasError) {
-  print(snapshot.error);
-  return Center(child: Text(snapshot.error.toString()));
-}
-
+          if (snapshot.hasError) {
+            return const Center(child: Text('Error loading news'));
+          }
 
           final articles = snapshot.data!;
 
@@ -40,3 +38,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
