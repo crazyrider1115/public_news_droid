@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class FindNewsScreen extends StatelessWidget {
+  const FindNewsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(title: const Text('Find News')),
       drawer: const AppDrawer(),
       body: const Center(
         child: Text(
-          'Welcome to Public News Droid',
+          'Search news here',
           style: TextStyle(fontSize: 18),
         ),
       ),
     );
   }
 }
-
