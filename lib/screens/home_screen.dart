@@ -17,9 +17,11 @@ class HomeScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasError) {
-            return const Center(child: Text('Error loading news'));
-          }
+          else if (snapshot.hasError) {
+  print(snapshot.error);
+  return Center(child: Text(snapshot.error.toString()));
+}
+
 
           final articles = snapshot.data!;
 
