@@ -16,7 +16,8 @@ class PublicNewsDroid extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginScreen(),
+        '/': (context) => LoginScreen(),
+
         '/home': (context) => const HomeScreen(),
         '/find-news': (context) => const FindNewsScreen(),
       },
