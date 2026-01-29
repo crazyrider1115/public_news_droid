@@ -8,7 +8,7 @@ class FindNewsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Find News')),
-      drawer: const AppDrawer(),
+      drawer: AppDrawer(),
       body: const Center(
         child: Text(
           'Search news here',

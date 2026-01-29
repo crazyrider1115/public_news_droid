@@ -13,9 +13,8 @@ bool _rememberMe = false;
   final TextEditingController passwordController = TextEditingController();
 
   void loginUser() {
-    String username = usernameController.text;
-    String password = passwordController.text;
-
+    String username = usernameController.text.trim();
+String password = passwordController.text.trim();
     if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please enter username and password")),
