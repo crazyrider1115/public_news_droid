@@ -3,6 +3,15 @@ const axios = require("axios");
 
 const router = express.Router();
 
+const API_KEYS = process.env.NEWS_API_KEYS.split(",");
+let currentKeyIndex = 0;
+
+function getApiKey() {
+  const key = API_KEYS[currentKeyIndex];
+  currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+  return key;
+}
+
 router.get("/top", async (req, res) => {
   try {
     const response = await axios.get(
@@ -12,7 +21,7 @@ router.get("/top", async (req, res) => {
           q: "technology",
           language: "en",
           sortBy: "publishedAt",
-          apiKey: process.env.NEWS_API_KEY
+          apiKey: getApiKey()
         }
       }
     );
