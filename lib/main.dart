@@ -25,7 +25,6 @@ class PublicNewsDroid extends StatelessWidget {
       },
 
       title: 'Public News Droid',
-      home: const SearchScreen(),
 
     );
   }

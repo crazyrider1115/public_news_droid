@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
 import '../services/news_api_service.dart';
-
+import 'find_news_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,8 +10,20 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Public News Droid'),
-      ),
+  title: const Text('Public News Droid'),
+  actions: [
+    IconButton(
+      icon: const Icon(Icons.filter_list),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const FindNewsScreen()),
+        );
+      },
+    ),
+  ],
+),
+
       body: FutureBuilder<List<dynamic>>(
         future: NewsApiService.fetchTopHeadlines(),
         builder: (context, snapshot) {
