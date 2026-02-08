@@ -18,26 +18,41 @@ function getApiKey() {
 
 router.get("/top", async (req, res) => {
   try {
+    const { category, date } = req.query;
+
+    const categoryMap = {
+      technology: "technology OR AI OR software",
+      politics: "politics OR government OR election",
+      sports: "sports OR football OR cricket OR match",
+      business: "business OR economy OR finance OR market",
+    };
+
+    const params = {
+      language: "en",
+      sortBy: "publishedAt",
+      apiKey: getApiKey(),
+      q: categoryMap[category] || "news",
+    };
+
+    if (date) {
+      params.from = date;
+      params.to = date;
+    }
+
     const response = await axios.get(
       "https://newsapi.org/v2/everything",
-      {
-        params: {
-          q: "technology",
-          language: "en",
-          sortBy: "publishedAt",
-          apiKey: getApiKey()
-        }
-      }
+      { params }
     );
 
     res.json({
       status: "ok",
-      articles: response.data.articles
+      articles: response.data.articles,
     });
   } catch (err) {
     console.error(err.response?.data || err.message);
     res.status(500).json({ error: "Failed to fetch news" });
   }
 });
+
 
 module.exports = router;

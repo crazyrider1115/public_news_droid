@@ -4,23 +4,29 @@ import '../services/news_api_service.dart';
 import 'find_news_screen.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-  title: const Text('Public News Droid'),
-  actions: [
-    IconButton(
-      icon: const Icon(Icons.filter_list),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const FindNewsScreen()),
-        );
-      },
-    ),
-  ],
-),
+        title: const Text('Public News Droid'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FindNewsScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+
+      drawer: AppDrawer(),
 
       body: FutureBuilder<List<dynamic>>(
         future: NewsApiService.fetchTopHeadlines(),
@@ -46,14 +52,10 @@ class HomeScreen extends StatelessWidget {
             },
           );
         },
-        title: Text('Home'),
-      ),
-      drawer: AppDrawer(), // 👈 MENU ATTACHED HERE
-      body: Center(
-        child: Text('Welcome to Public News Droid'),
       ),
     );
   }
 }
+
 
 
