@@ -4,8 +4,6 @@ import '../services/news_api_service.dart';
 import 'find_news_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +46,14 @@ class HomeScreen extends StatelessWidget {
             },
           );
         },
+        title: Text('Home'),
+      ),
+      drawer: AppDrawer(), // 👈 MENU ATTACHED HERE
+      body: Center(
+        child: Text('Welcome to Public News Droid'),
       ),
     );
   }
 }
+
 

@@ -19,9 +19,11 @@ class PublicNewsDroid extends StatelessWidget {
 
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/find-news': (context) => const FindNewsScreen(),
+        '/': (context) => LoginScreen(),
+
+        '/home': (context) => HomeScreen(),
+'/find-news': (context) => FindNewsScreen(),
+
       },
 
       title: 'Public News Droid',

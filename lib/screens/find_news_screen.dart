@@ -28,6 +28,7 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Find News')),
+
       body: Column(
         children: [
           CategoryFilter(
@@ -61,6 +62,12 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
             ),
           ),
         ],
+      drawer: AppDrawer(),
+      body: const Center(
+        child: Text(
+          'Search news here',
+          style: TextStyle(fontSize: 18),
+        ),
       ),
     );
   }
