@@ -3,10 +3,7 @@ const axios = require("axios");
 
 const router = express.Router();
 
-const API_KEYS = [
-  "3dd04a9177c2474d86eccaed2f066444",
-  "GZ39D9nx1dEn9voB7ME81ylTkOPdC_GFLX_1Caigi9vQ44Wr"
-];
+const API_KEYS = process.env.NEWS_API_KEYS.split(",");
 
 let currentKeyIndex = 0;
 
