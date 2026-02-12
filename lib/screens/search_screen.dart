@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert'; // For json.decode
+import 'package:http/http.dart' as http; // Make sure to run 'flutter pub add http'
 import '../widgets/category_filter.dart';
 import '../widgets/date_filter.dart';
 
@@ -12,47 +14,52 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   String selectedCategory = 'All';
   DateTime? selectedDate;
-
-  // Dummy news data
-  final List<Map<String, dynamic>> allNews = [
-    {
-      'title': 'Politics Today',
-      'category': 'Politics',
-      'date': DateTime(2026, 1, 20),
-    },
-    {
-      'title': 'New Tech Launch',
-      'category': 'Technology',
-      'date': DateTime(2026, 1, 21),
-    },
-    {
-      'title': 'Football Championship',
-      'category': 'Sports',
-      'date': DateTime(2026, 1, 22),
-    },
-    {
-      'title': 'Stock Market Update',
-      'category': 'Business',
-      'date': DateTime(2026, 1, 20),
-    },
-  ];
-
   List<Map<String, dynamic>> filteredNews = [];
+  bool isLoading = false; // To show the user that data is being fetched
 
-  void filterNews() {
-    setState(() {
-      filteredNews = allNews.where((news) {
-        final matchesCategory = selectedCategory == 'All' ||
-            news['category'] == selectedCategory;
+  // The 10.0.2.2 IP is required for Android Emulators to see your computer's localhost
+  final String backendUrl = "http://10.0.2.2:3000/api/news"; 
 
-        final matchesDate = selectedDate == null ||
-            (news['date'].year == selectedDate!.year &&
-                news['date'].month == selectedDate!.month &&
-                news['date'].day == selectedDate!.day);
+  @override
+  void initState() {
+    super.initState();
+    filterNews(); // Fetch initial news on load
+  }
 
-        return matchesCategory && matchesDate;
-      }).toList();
-    });
+  Future<void> filterNews() async {
+    setState(() => isLoading = true);
+
+    // 1. Prepare parameters for the live API
+    // Standardize 'All' to empty and use lowercase for API compatibility
+    String categoryParam = selectedCategory == 'All' ? '' : selectedCategory.toLowerCase();
+    
+    // Format date as YYYY-MM-DD for the backend
+    String dateParam = selectedDate != null 
+        ? "${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}" 
+        : "";
+
+    try {
+      // 2. Make the request to your Node.js backend
+      final response = await http.get(
+        Uri.parse("$backendUrl?category=$categoryParam&date=$dateParam")
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          filteredNews = List<Map<String, dynamic>>.from(data);
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+      // Show error to the user via SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Could not connect to backend: $e")),
+      );
+    }
   }
 
   @override
@@ -70,27 +77,17 @@ class _SearchScreenState extends State<SearchScreen> {
             CategoryFilter(
               selectedCategory: selectedCategory,
               onChanged: (value) {
-                setState(() {
-                  selectedCategory = value!;
-                });
+                setState(() => selectedCategory = value!);
+                filterNews(); // Refresh live data instantly
               },
             ),
             const SizedBox(height: 12),
             DateFilter(
               selectedDate: selectedDate,
               onDateSelected: (date) {
-                setState(() {
-                  selectedDate = date;
-                });
+                setState(() => selectedDate = date);
+                filterNews(); // Refresh live data instantly
               },
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: filterNews,
-                child: const Text('Search'),
-              ),
             ),
             const SizedBox(height: 16),
             const Text(
@@ -98,8 +95,11 @@ class _SearchScreenState extends State<SearchScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
+            // UI Feedback: Show a spinner while the API is loading
             Expanded(
-              child: filteredNews.isEmpty
+              child: isLoading 
+                ? const Center(child: CircularProgressIndicator()) 
+                : filteredNews.isEmpty
                   ? const Center(child: Text('No news found'))
                   : ListView.builder(
                       itemCount: filteredNews.length,
@@ -107,9 +107,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         final news = filteredNews[index];
                         return Card(
                           child: ListTile(
-                            title: Text(news['title']),
+                            title: Text(news['title'] ?? 'No Title'),
                             subtitle: Text(
-                              '${news['category']} • ${news['date'].day}/${news['date'].month}/${news['date'].year}',
+                              '${news['category'] ?? 'General'} • ${news['date'] ?? ''}',
                             ),
                           ),
                         );
