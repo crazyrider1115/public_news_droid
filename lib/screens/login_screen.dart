@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
 import 'signup_screen.dart';
 import 'admin_approval_screen.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'home_screen.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,39 +20,53 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void loginUser() {
-    String username = usernameController.text.trim();
-    String password = passwordController.text.trim();
+  Future<void> loginUser() async {
+  String username = usernameController.text.trim();
+  String password = passwordController.text.trim();
 
-    if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter username and password")),
-      );
-      return;
-    }
+  if (username.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please enter username and password")),
+    );
+    return;
+  }
 
-    // 🔐 ADMIN LOGIN (HARDCODED)
-    if (username == "admin" && password == "admin") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const AdminApprovalScreen(),
-        ),
-      );
-      return;
-    }
+  // 🔐 ADMIN LOGIN
+  if (username == "admin" && password == "admin") {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AdminApprovalScreen(),
+      ),
+    );
+    return;
+  }
 
-    // 👤 NORMAL USER LOGIN
-    String result = AuthService.signIn(username, password);
+  // 👤 NORMAL USER LOGIN
+  try {
+    final response = await http.post(
+      Uri.parse("http://10.0.2.2:3000/auth/login"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "username": username,
+        "password": password,
+      }),
+    );
 
-    if (result == 'Login success') {
+    if (response.statusCode == 200) {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result)),
+        const SnackBar(content: Text("Invalid credentials or not approved")),
       );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Server error")),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

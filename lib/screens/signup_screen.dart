@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -13,27 +15,43 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void signUpUser() {
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
+  Future<void> signUpUser() async {
+  String username = emailController.text.trim(); // using email as username
+  String password = passwordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("All fields are required")),
-      );
-      return;
-    }
+  if (username.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("All fields are required")),
+    );
+    return;
+  }
 
-    String result = AuthService.signUp(name, email, password);
+  try {
+    final response = await http.post(
+      Uri.parse("http://10.0.2.2:3000/auth/signup"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "username": username,
+        "password": password,
+      }),
+    );
+
+    final data = jsonDecode(response.body);
 
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(result)));
+        .showSnackBar(SnackBar(content: Text(data["message"])));
 
-    if (result.startsWith("Signup successful")) {
-      Navigator.pop(context); // back to login
+    if (response.statusCode == 200) {
+      Navigator.pop(context); // go back to login
     }
+
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Server error")),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
