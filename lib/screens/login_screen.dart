@@ -17,39 +17,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void loginUser() {
-    String username = usernameController.text.trim();
-    String password = passwordController.text.trim();
+  void loginUser() async {
+  String username = usernameController.text.trim();
+  String password = passwordController.text.trim();
 
-    if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter username and password")),
-      );
-      return;
-    }
-
-    // 🔐 ADMIN LOGIN (HARDCODED)
-    if (username == "admin" && password == "admin") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const AdminApprovalScreen(),
-        ),
-      );
-      return;
-    }
-
-    // 👤 NORMAL USER LOGIN
-    String result = AuthService.signIn(username, password);
-
-    if (result == 'Login success') {
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result)),
-      );
-    }
+  if (username.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please enter username and password")),
+    );
+    return;
   }
+
+  // ADMIN LOGIN
+  if (username == "admin" && password == "admin") {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AdminApprovalScreen(),
+      ),
+    );
+    return;
+  }
+
+  final response = await AuthService.signIn(username, password);
+
+  if (response['success'] == true) {
+    Navigator.pushReplacementNamed(context, '/home');
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response['message'])),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {

@@ -1,50 +1,62 @@
-import '../models/user_model.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class AuthService {
-  static final List<UserModel> _users = [];
 
-  // SIGN UP
-  static String signUp(String name, String username, String password) {
-    final exists = _users.any((u) => u.username == username);
-    if (exists) {
-      return "User already exists";
-    }
+  static const String baseUrl = "http://10.0.2.2:3000/auth";
 
-    _users.add(
-      UserModel(
-        name: name,
-        username: username,
-        password: password,
-        approved: false,
-      ),
+
+  static Future<String> signUp(String name, String username, String password) async {
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/signup'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'username': username,
+        'password': password
+      }),
     );
 
-    return "Signup successful. Wait for admin approval";
+    final data = jsonDecode(response.body);
+    return data['message'];
   }
 
-  // SIGN IN
-  static String signIn(String username, String password) {
-    try {
-      final user = _users.firstWhere(
-        (u) => u.username == username && u.password == password,
-      );
 
-      if (!user.approved) {
-        return "Account not approved yet";
-      }
+  static Future<Map<String,dynamic>> signIn(String username, String password) async {
 
-      return "Login success";
-    } catch (e) {
-      return "Invalid username or password";
-    }
+    final response = await http.post(
+      Uri.parse('$baseUrl/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username,
+        'password': password
+      }),
+    );
+
+    return jsonDecode(response.body);
   }
 
-  // ADMIN
-  static List<UserModel> getPendingUsers() {
-    return _users.where((u) => !u.approved).toList();
+
+  static Future<List<dynamic>> getPendingUsers() async {
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/pending'),
+    );
+
+    return jsonDecode(response.body);
   }
 
-  static void approveUser(UserModel user) {
-    user.approved = true;
+
+  static Future<void> approveUser(String username) async {
+
+    await http.post(
+      Uri.parse('$baseUrl/approve'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username
+      }),
+    );
   }
+
 }

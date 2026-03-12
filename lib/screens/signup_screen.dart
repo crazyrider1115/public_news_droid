@@ -13,27 +13,27 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void signUpUser() {
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
+  void signUpUser() async {
+  String name = nameController.text.trim();
+  String email = emailController.text.trim();
+  String password = passwordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("All fields are required")),
-      );
-      return;
-    }
-
-    String result = AuthService.signUp(name, email, password);
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(result)));
-
-    if (result.startsWith("Signup successful")) {
-      Navigator.pop(context); // back to login
-    }
+  if (name.isEmpty || email.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("All fields are required")),
+    );
+    return;
   }
+
+  final result = await AuthService.signUp(name, email, password);
+
+  ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(result)));
+
+  if (result.contains("Signup successful")) {
+    Navigator.pop(context);
+  }
+}
 
   @override
   Widget build(BuildContext context) {
