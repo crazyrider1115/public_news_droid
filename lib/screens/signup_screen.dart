@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -15,43 +14,44 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Future<void> signUpUser() async {
-  String username = emailController.text.trim(); // using email as username
-  String password = passwordController.text.trim();
+  void signUpUser() async {
+    String name = nameController.text.trim();
+    String username = emailController.text.trim();
+    String password = passwordController.text.trim();
 
-  if (username.isEmpty || password.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("All fields are required")),
-    );
-    return;
-  }
-
-  try {
-    final response = await http.post(
-      Uri.parse("http://10.0.2.2:3000/auth/signup"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "username": username,
-        "password": password,
-      }),
-    );
-
-    final data = jsonDecode(response.body);
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(data["message"])));
-
-    if (response.statusCode == 200) {
-      Navigator.pop(context); // go back to login
+    if (name.isEmpty || username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("All fields are required")),
+      );
+      return;
     }
 
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Server error")),
-    );
-  }
-}
+    try {
+      final response = await http.post(
+        Uri.parse("http://10.0.2.2:3000/auth/signup"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "name": name,
+          "username": username,
+          "password": password,
+        }),
+      );
 
+      final data = jsonDecode(response.body);
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(data["message"])));
+
+      if (response.statusCode == 200) {
+        Navigator.pop(context);
+      }
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Server error")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
