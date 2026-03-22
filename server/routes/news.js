@@ -5,6 +5,9 @@ const router = express.Router();
 
 router.get("/top", async (req, res) => {
   try {
+    // ✅ ADD THIS LINE HERE
+    console.log("API KEY:", process.env.NEWSDATA_API_KEY);
+
     const response = await axios.get(
       "https://newsdata.io/api/1/news",
       {
