@@ -31,4 +31,3 @@ class PublicNewsDroid extends StatelessWidget {
     );
   }
 }
-
