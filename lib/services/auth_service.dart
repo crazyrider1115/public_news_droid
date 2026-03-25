@@ -25,17 +25,17 @@ class AuthService {
 
   static Future<Map<String,dynamic>> signIn(String username, String password) async {
 
-    final response = await http.post(
-      Uri.parse('$baseUrl/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'username': username,
-        'password': password
-      }),
-    );
+  final response = await http.post(
+    Uri.parse('$baseUrl/login'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'username': username,
+      'password': password,
+    }),
+  );
 
-    return jsonDecode(response.body);
-  }
+  return jsonDecode(response.body);
+}
 
 
   static Future<List<dynamic>> getPendingUsers() async {

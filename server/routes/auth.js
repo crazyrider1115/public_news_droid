@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 /* ---------- SIGNUP ---------- */
 router.post("/signup", async (req, res) => {
@@ -65,9 +66,19 @@ router.post("/login", async (req, res) => {
       return res.json({ success: false, message: "Account not approved yet" });
     }
 
+    // 🔐 CREATE TOKEN
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
     console.log("USER LOGGED IN:", username);
 
-    res.json({ success: true });
+    res.json({
+      success: true,
+      token: token
+    });
 
   } catch (err) {
 
