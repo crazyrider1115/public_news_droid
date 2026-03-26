@@ -45,10 +45,55 @@ class HomeScreen extends StatelessWidget {
             itemCount: articles.length,
             itemBuilder: (context, index) {
               final article = articles[index];
-              return ListTile(
-                title: Text(article['title'] ?? 'No title'),
-                subtitle: Text(article['source']['name'] ?? ''),
-              );
+
+              return Card(
+  margin: const EdgeInsets.symmetric(vertical: 8),
+  elevation: 3,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      if (article['image'] != null)
+        ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Image.network(
+            article['image'],
+            height: 180,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const SizedBox();
+            },
+          ),
+        ),
+
+      Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              article['title'] ?? 'No title',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              article['description'] ?? '',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+);
             },
           );
         },
