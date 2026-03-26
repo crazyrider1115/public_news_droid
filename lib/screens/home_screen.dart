@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
 import '../services/news_api_service.dart';
 import 'find_news_screen.dart';
+import 'news_detail_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -55,63 +56,66 @@ class HomeScreen extends StatelessWidget {
               final imageUrl =
                   article['urlToImage'] ?? article['image'];
 
-              return Card(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 🔥 IMAGE FIX
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(15)),
-                      child: Image.network(
-                        imageUrl ??
-                            "https://via.placeholder.com/300",
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.network(
-                            "https://via.placeholder.com/300",
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      ),
-                    ),
+              return GestureDetector(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => NewsDetailScreen(article: article),
+      ),
+    );
+  },
+  child: Card(
+    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    elevation: 4,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(15)),
+          child: Image.network(
+            imageUrl ?? "https://via.placeholder.com/300",
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
 
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            article['title'] ?? 'No title',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            article['description'] ?? '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style:
-                                const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 📰 TITLE
+              Text(
+                article['title'] ?? 'No title',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
+              ),
+
+              const SizedBox(height: 6),
+
+              // 🏷 PROVIDER
+              Text(
+                article['source'] ?? 'News Source',
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+);
             },
           );
         },

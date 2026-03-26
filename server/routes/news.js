@@ -20,12 +20,13 @@ router.get("/top", async (req, res) => {
     const results = response.data.results || [];
 
     const articles = results.map(a => ({
-      title: a.title,
-      description: a.description,
-      url: a.link,
-      image: a.image_url,
-      publishedAt: a.pubDate,
-    }));
+  title: a.title,
+  description: a.description,
+  url: a.link,
+  image: a.image_url,
+  publishedAt: a.pubDate,
+  source: a.source_id, // ✅ ADD THIS
+}));
 
     res.json({
       status: "ok",
@@ -34,12 +35,7 @@ router.get("/top", async (req, res) => {
 
   } catch (err) {
     console.error(err.response?.data || err.message);
-
-    // ✅ FIX: prevent app from hanging
-    res.status(200).json({
-      status: "ok",
-      articles: [],
-    });
+    res.status(500).json({ error: "Failed to fetch news" });
   }
 });
 
