@@ -35,6 +35,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/public_news_droid")
 app.use("/news", newsRoutes);
 app.use("/auth", authRoutes);
 
-app.listen(3000, "0.0.0.0", () => {
-  console.log("Server running on port 3000");
+app.listen(5000, "0.0.0.0", () => {
+  console.log("Server running on port 5000");
 });
