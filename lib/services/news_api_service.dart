@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class NewsApiService {
   static String get baseUrl {
     if (kIsWeb) {
-      return 'http://localhost:3000/news/top';
+      return 'http://10.0.2.2:3000/news/top';
     } else {
       // Android emulator
       return 'http://10.0.2.2:3000/news/top';
