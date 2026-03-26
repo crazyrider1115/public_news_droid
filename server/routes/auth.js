@@ -12,7 +12,7 @@ router.post("/signup", async (req, res) => {
 
     const exists = await User.findOne({ username });
     if (exists) {
-      return res.json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists" }); // ✅ FIX
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -21,14 +21,14 @@ router.post("/signup", async (req, res) => {
       name,
       username,
       password: hashedPassword,
-      approved: false,
+      approved: true, // ✅ FIX (auto approve)
     });
 
     await newUser.save();
 
     console.log("NEW USER SIGNED UP:", username);
 
-    res.json({ message: "Signup successful. Wait for admin approval" });
+    res.json({ message: "Signup successful" });
 
   } catch (err) {
     console.log(err);

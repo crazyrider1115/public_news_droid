@@ -36,7 +36,13 @@ class HomeScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading news'));
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No news available'));
           }
 
           final articles = snapshot.data!;
@@ -46,54 +52,66 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final article = articles[index];
 
-              return Card(
-  margin: const EdgeInsets.symmetric(vertical: 8),
-  elevation: 3,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(12),
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      if (article['image'] != null)
-        ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-          child: Image.network(
-            article['image'],
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return const SizedBox();
-            },
-          ),
-        ),
+              final imageUrl =
+                  article['urlToImage'] ?? article['image'];
 
-      Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              article['title'] ?? 'No title',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              article['description'] ?? '',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    ],
-  ),
-);
+              return Card(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 🔥 IMAGE FIX
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(15)),
+                      child: Image.network(
+                        imageUrl ??
+                            "https://via.placeholder.com/300",
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.network(
+                            "https://via.placeholder.com/300",
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            article['title'] ?? 'No title',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            article['description'] ?? '',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style:
+                                const TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
           );
         },

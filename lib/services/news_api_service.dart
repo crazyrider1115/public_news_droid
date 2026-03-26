@@ -1,23 +1,15 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class NewsApiService {
   static String get baseUrl {
-    if (kIsWeb) {
-      return 'http://27.63.229.206:3000/news/top';
-    } else {
-      // Android emulator
-      return 'http://27.63.229.206:3000/news/top';
-    }
+    return 'http://10.92.114.11:3000/news/top';
   }
 
-  /// Home screen – no filters
   static Future<List<dynamic>> fetchTopHeadlines() {
     return fetchFilteredNews();
   }
 
-  /// Find News screen – optional filters
   static Future<List<dynamic>> fetchFilteredNews({
     String? category,
     String? date,
@@ -39,7 +31,3 @@ class NewsApiService {
     }
   }
 }
-
-
-
-
