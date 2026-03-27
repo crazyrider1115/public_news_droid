@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class NewsApiService {
   static String get baseUrl {
-    return 'http://10.92.114.11:5000/news/top';
+    return 'http://172.20.10.2:5000/news/top';
   }
 
   static Future<List<dynamic>> fetchTopHeadlines() {

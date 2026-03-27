@@ -17,7 +17,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> signupUser() async {
     try {
       final response = await http.post(
-        Uri.parse("http://10.92.114.11:5000/api/auth/signup"), // ✅ YOUR IP
+        Uri.parse("http://172.20.10.2:5000/api/auth/signup"), // ✅ YOUR IP
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "name": nameController.text,
