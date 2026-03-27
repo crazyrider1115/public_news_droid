@@ -49,4 +49,17 @@ class AuthService {
       }),
     );
   }
+
+  static Future<Map<String,dynamic>> resetPassword(String username, String newPassword) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/reset-password'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username,
+        'newPassword': newPassword
+      }),
+    );
+
+    return jsonDecode(response.body);
+  }
 }

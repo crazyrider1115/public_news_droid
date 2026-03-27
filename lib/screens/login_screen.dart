@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'signup_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'admin_approval_screen.dart';
+import 'forgot_password_screen.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +18,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkRememberMe();
+  }
+
+  void _checkRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedUsername = prefs.getString('saved_username');
+    if (savedUsername != null && savedUsername.isNotEmpty) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
 
   void loginUser() async {
     String username = usernameController.text.trim();
@@ -42,6 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final response = await AuthService.signIn(username, password);
 
     if (response['success'] == true) {
+      if (_rememberMe) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('saved_username', username);
+      }
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -122,10 +142,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text("Forgot password not implemented yet"),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ForgotPasswordScreen(),
                         ),
                       );
                     },
