@@ -81,7 +81,6 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
                           return const Center(child: Text('Error loading news'));
                         }
 
-                        // ✅ SAFE DATA HANDLING
                         final articles = snapshot.data ?? [];
 
                         if (articles.isEmpty) {
@@ -96,9 +95,10 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
                             return ListTile(
                               title: Text(article['title'] ?? 'No title'),
 
-                              // ✅ SAFE (no crash)
+                              // ✅ FIXED HERE
                               subtitle: Text(
-                                  article['source']?['name'] ?? ''),
+                                article['source'] ?? '',
+                              ),
                             );
                           },
                         );

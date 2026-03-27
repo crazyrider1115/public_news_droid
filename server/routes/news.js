@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/top", async (req, res) => {
   try {
-    console.log("API KEY:", process.env.NEWS_API_KEY);
+    const { category } = req.query;
 
     const response = await axios.get(
       "https://newsdata.io/api/1/news",
@@ -13,6 +13,7 @@ router.get("/top", async (req, res) => {
         params: {
           apikey: process.env.NEWS_API_KEY,
           language: "en",
+          category: category || "top", // ✅ FILTER FIX
         },
       }
     );
@@ -20,13 +21,13 @@ router.get("/top", async (req, res) => {
     const results = response.data.results || [];
 
     const articles = results.map(a => ({
-  title: a.title,
-  description: a.description,
-  url: a.link,
-  image: a.image_url,
-  publishedAt: a.pubDate,
-  source: a.source_id, // ✅ ADD THIS
-}));
+      title: a.title,
+      description: a.description,
+      url: a.link,
+      image: a.image_url,
+      publishedAt: a.pubDate,
+      source: a.source_id || a.source_name || "Unknown",
+    }));
 
     res.json({
       status: "ok",
@@ -35,7 +36,11 @@ router.get("/top", async (req, res) => {
 
   } catch (err) {
     console.error(err.response?.data || err.message);
-    res.status(500).json({ error: "Failed to fetch news" });
+
+    res.status(200).json({
+      status: "ok",
+      articles: [],
+    });
   }
 });
 

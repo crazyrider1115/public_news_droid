@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/find_news_screen.dart';
-
+import 'screens/signup_screen.dart';
 
 void main() {
   runApp(const PublicNewsDroid());
@@ -13,20 +13,16 @@ class PublicNewsDroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp( // ✅ FIXED
       debugShowCheckedModeBanner: false,
 
-      initialRoute: '/',
+      initialRoute: "/login",
+
       routes: {
-        '/': (context) => LoginScreen(),
-
-        '/home': (context) => HomeScreen(),
-'/find-news': (context) => FindNewsScreen(),
-
+        "/login": (context) => LoginScreen(),
+        "/signup": (context) => SignupScreen(),
+        "/home": (context) => HomeScreen(),
       },
-
-      title: 'Public News Droid',
-
     );
   }
 }

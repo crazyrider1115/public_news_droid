@@ -18,7 +18,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool isLoading = false; // To show the user that data is being fetched
 
   // The 10.0.2.2 IP is required for Android Emulators to see your computer's localhost
-  final String backendUrl = "http://10.0.2.2:3000/api/news"; 
+  final String backendUrl = "http://10.0.2.2:5000/api/news"; 
 
   @override
   void initState() {

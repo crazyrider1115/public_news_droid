@@ -14,41 +14,40 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void signUpUser() async {
-    String name = nameController.text.trim();
-    String username = emailController.text.trim();
-    String password = passwordController.text.trim();
-
-    if (name.isEmpty || username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("All fields are required")),
-      );
-      return;
-    }
-
+  Future<void> signupUser() async {
     try {
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:3000/auth/signup"),
+        Uri.parse("http://10.92.114.11:5000/api/auth/signup"), // ✅ YOUR IP
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "name": name,
-          "username": username,
-          "password": password,
+          "name": nameController.text,
+          "username": emailController.text,
+          "password": passwordController.text,
         }),
       );
 
+      if (!mounted) return;
+
+      print("RESPONSE: ${response.body}");
+
       final data = jsonDecode(response.body);
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(data["message"])));
-
       if (response.statusCode == 200) {
-        Navigator.pop(context);
-      }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data["message"] ?? "Signup successful")),
+        );
 
+        Navigator.pushReplacementNamed(context, "/login");
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data["message"] ?? "Signup failed")),
+        );
+      }
     } catch (e) {
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Server error")),
+        SnackBar(content: Text("Error: $e")),
       );
     }
   }
@@ -68,7 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
             const SizedBox(height: 15),
             TextField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: "Email / Username"),
+              decoration: const InputDecoration(labelText: "Username"),
             ),
             const SizedBox(height: 15),
             TextField(
@@ -81,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: signUpUser,
+                onPressed: signupUser,
                 child: const Text("SIGN UP"),
               ),
             ),

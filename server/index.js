@@ -1,37 +1,29 @@
-require('dotenv').config({ path: __dirname + '/.env' });
-
-console.log("ENV CHECK:", process.env.NEWS_API_KEY);
-
 const express = require("express");
-const cors = require("cors");
 const mongoose = require("mongoose");
-
-const newsRoutes = require("./routes/news");
-const authRoutes = require("./routes/auth");
+const cors = require("cors");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect("mongodb://127.0.0.1:27017/public_news_droid")
-.then(() => {
-  console.log("MongoDB connected");
-})
-.catch((err) => {
-  console.log("MongoDB connection error:", err);
-});
+// 🔥 ROUTES
+const authRoutes = require("./routes/auth.js");
+app.use("/api/auth", authRoutes);
 
-// Routes
-app.use("/news", newsRoutes);
-app.use("/auth", authRoutes);
-
-// Optional root route
+// 🔥 TEST ROUTE
 app.get("/", (req, res) => {
-  res.send("Server working 🚀");
+  res.send("API is running...");
 });
 
-app.listen(3000, "0.0.0.0", () => {
-  console.log("Server running on port 3000");
+// 🔥 MONGODB CONNECT
+mongoose.connect("mongodb://127.0.0.1:27017/newsdroid")
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log(err));
+
+// 🔥 IMPORTANT (ALLOW PHONES)
+app.listen(5000, "0.0.0.0", () => {
+  console.log("Server running on port 5000");
 });
+
+console.log("AUTH ROUTES LOADED");
