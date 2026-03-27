@@ -17,7 +17,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> signupUser() async {
     try {
       final response = await http.post(
-        Uri.parse("http://172.20.10.2:5000/api/auth/signup"), // ✅ YOUR IP
+        Uri.parse("https://public-news-droid.onrender.com/api/auth/signup"), // ✅ LIVE RENDER URL
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "name": nameController.text,

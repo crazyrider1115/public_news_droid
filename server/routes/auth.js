@@ -21,7 +21,7 @@ router.post("/signup", async (req, res) => {
       name,
       username,
       password: hashedPassword,
-      approved: true, // ✅ FIX (auto approve)
+      approved: false,
     });
 
     await newUser.save();

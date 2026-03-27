@@ -11,8 +11,11 @@ app.use(express.json());
 
 // 🔥 ROUTES
 const authRoutes = require("./routes/auth.js");
+const newsRoutes = require("./routes/news.js");
+
 app.use("/api/auth", authRoutes);
-console.log("AUTH ROUTES LOADED");
+app.use("/news", newsRoutes);
+console.log("ROUTES LOADED");
 
 // 🔥 TEST ROUTE
 app.get("/", (req, res) => {
