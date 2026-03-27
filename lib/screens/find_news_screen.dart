@@ -3,6 +3,7 @@ import '../widgets/category_filter.dart';
 import '../widgets/date_filter.dart';
 import '../widgets/app_drawer.dart';
 import '../services/news_api_service.dart';
+import 'news_detail_screen.dart';
 
 class FindNewsScreen extends StatefulWidget {
   const FindNewsScreen({super.key});
@@ -99,6 +100,14 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
                               subtitle: Text(
                                 article['source'] ?? '',
                               ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => NewsDetailScreen(article: article),
+                                  ),
+                                );
+                              },
                             );
                           },
                         );
