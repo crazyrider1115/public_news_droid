@@ -67,6 +67,21 @@ router.get("/pending", async (req, res) => {
   res.json(users);
 });
 
+/* ---------- RESET PASSWORD (SIMULATED EMAIL) ---------- */
+router.post("/reset-password", async (req, res) => {
+  const { username, newPassword } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return res.json({ success: false, message: "User not found" });
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await User.updateOne({ username }, { password: hashedPassword });
+
+  res.json({ success: true, message: "Password updated successfully" });
+});
+
 /* ---------- APPROVE USER ---------- */
 router.post("/approve", async (req, res) => {
   const { username } = req.body;
