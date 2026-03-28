@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/home_screen.dart';
 import '../screens/find_news_screen.dart';
 import '../screens/login_screen.dart';
+import '../screens/profile_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -85,9 +86,9 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.person),
             title: Text('Profile'),
             onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Profile clicked')),
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
               );
             },
           ),
