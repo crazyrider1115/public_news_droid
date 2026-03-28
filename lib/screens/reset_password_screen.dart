@@ -24,6 +24,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     final response = await AuthService.resetPassword(widget.username, newPassword);
 
+    if (!mounted) return;
+
     if (response['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Password reset successfully! Please login.")),

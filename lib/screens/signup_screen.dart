@@ -28,7 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (!mounted) return;
 
-      print("RESPONSE: ${response.body}");
+      debugPrint("RESPONSE: ${response.body}");
 
       final data = jsonDecode(response.body);
 

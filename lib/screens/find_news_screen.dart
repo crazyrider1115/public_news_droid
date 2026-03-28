@@ -91,14 +91,9 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
                           itemCount: articles.length,
                           itemBuilder: (context, index) {
                             final article = articles[index];
+                            final imageUrl = article['urlToImage'] ?? article['image'];
 
-                            return ListTile(
-                              title: Text(article['title'] ?? 'No title'),
-
-                              // ✅ FIXED HERE
-                              subtitle: Text(
-                                article['source'] ?? '',
-                              ),
+                            return GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -107,6 +102,50 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
                                   ),
                                 );
                               },
+                              child: Card(
+                                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                                      child: Image.network(
+                                        imageUrl ?? "https://via.placeholder.com/300",
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            article['title'] ?? 'No title',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            article['source'] ?? 'News Source',
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             );
                           },
                         );

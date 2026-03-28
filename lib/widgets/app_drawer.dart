@@ -5,6 +5,8 @@ import '../screens/login_screen.dart';
 import '../screens/profile_screen.dart';
 
 class AppDrawer extends StatelessWidget {
+  const AppDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
