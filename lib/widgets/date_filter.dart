@@ -5,10 +5,10 @@ class DateFilter extends StatelessWidget {
   final ValueChanged<DateTime?> onDateSelected;
 
   const DateFilter({
-    Key? key,
+    super.key,
     required this.selectedDate,
     required this.onDateSelected,
-  }) : super(key: key);
+  });
 
   Future<void> _pickDate(BuildContext context) async {
     final pickedDate = await showDatePicker(

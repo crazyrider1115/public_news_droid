@@ -5,7 +5,7 @@ import '../widgets/category_filter.dart';
 import '../widgets/date_filter.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -53,6 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
         throw Exception('Server error: ${response.statusCode}');
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() => isLoading = false);
       // Show error to the user via SnackBar
       ScaffoldMessenger.of(context).showSnackBar(

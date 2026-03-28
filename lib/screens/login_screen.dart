@@ -28,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _checkRememberMe() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? savedUsername = prefs.getString('saved_username');
+    if (!mounted) return;
     if (savedUsername != null && savedUsername.isNotEmpty) {
       Navigator.pushReplacementNamed(context, '/home');
     }
@@ -62,8 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('saved_username', username);
       }
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } else {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(response['message'])),
       );

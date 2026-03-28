@@ -5,10 +5,10 @@ class CategoryFilter extends StatelessWidget {
   final ValueChanged<String?> onChanged;
 
   const CategoryFilter({
-    Key? key,
+    super.key,
     required this.selectedCategory,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class CategoryFilter extends StatelessWidget {
     ];
 
     return DropdownButtonFormField<String>(
-      value: selectedCategory,
+      initialValue: selectedCategory,
       decoration: const InputDecoration(
         labelText: 'Category',
         border: OutlineInputBorder(),

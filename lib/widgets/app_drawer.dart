@@ -4,6 +4,8 @@ import '../screens/find_news_screen.dart';
 import '../screens/login_screen.dart';
 
 class AppDrawer extends StatelessWidget {
+  const AppDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -44,10 +46,10 @@ class AppDrawer extends StatelessWidget {
             },
           ),
 
-          // 🔍 Find News
+          // 🗂 Categories
           ListTile(
-            leading: Icon(Icons.search),
-            title: Text('Find News'),
+            leading: Icon(Icons.category),
+            title: Text('Categories'),
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -56,17 +58,6 @@ class AppDrawer extends StatelessWidget {
             },
           ),
 
-          // 🗂 Categories
-          ListTile(
-            leading: Icon(Icons.category),
-            title: Text('Categories'),
-            onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Categories clicked')),
-              );
-            },
-          ),
 
           // 🔖 Saved News
           ListTile(
