@@ -96,4 +96,15 @@ router.post("/approve", async (req, res) => {
   res.json({ success: true });
 });
 
+/* ---------- REJECT USER ---------- */
+router.post("/reject", async (req, res) => {
+  const { username } = req.body;
+
+  await User.deleteOne({ username });
+
+  console.log("USER REJECTED:", username);
+
+  res.json({ success: true });
+});
+
 module.exports = router;
