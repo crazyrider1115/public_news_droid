@@ -18,8 +18,7 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
   Future<List<dynamic>>? _future;
 
   void fetchFilteredNews() {
-    final category =
-        selectedCategory == 'All' ? null : selectedCategory.toLowerCase();
+    final category = selectedCategory.toLowerCase();
 
     final date = selectedDate == null
         ? null

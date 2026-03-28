@@ -13,7 +13,7 @@ router.get("/top", async (req, res) => {
         params: {
           apikey: process.env.NEWS_API_KEY,
           language: "en",
-          category: category || "top", // ✅ FILTER FIX
+          category: category === "all" ? undefined : (category || "top"), // ✅ FILTER FIX
         },
       }
     );

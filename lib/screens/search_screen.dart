@@ -30,8 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() => isLoading = true);
 
     // 1. Prepare parameters for the live API
-    // Standardize 'All' to empty and use lowercase for API compatibility
-    String categoryParam = selectedCategory == 'All' ? '' : selectedCategory.toLowerCase();
+    String categoryParam = selectedCategory.toLowerCase();
     
     // Format date as YYYY-MM-DD for the backend
     String dateParam = selectedDate != null 
