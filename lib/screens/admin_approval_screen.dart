@@ -31,6 +31,11 @@ class _AdminApprovalScreenState extends State<AdminApprovalScreen> {
     await loadPendingUsers();
   }
 
+  Future<void> rejectUser(String username) async {
+    await AuthService.rejectUser(username);
+    await loadPendingUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -57,11 +62,27 @@ class _AdminApprovalScreenState extends State<AdminApprovalScreen> {
                     title: Text(user['name']),
                     subtitle: Text(user['username']),
 
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        approveUser(user['username']);
-                      },
-                      child: const Text("Approve"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            approveUser(user['username']);
+                          },
+                          child: const Text("Approve"),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            rejectUser(user['username']);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text("Reject"),
+                        ),
+                      ],
                     ),
                   ),
                 );

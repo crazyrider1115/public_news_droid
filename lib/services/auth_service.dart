@@ -50,6 +50,17 @@ class AuthService {
     );
   }
 
+  static Future<void> rejectUser(String username) async {
+    await http.post(
+      Uri.parse('$baseUrl/reject'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username
+      }),
+    );
+  }
+
+
   static Future<Map<String,dynamic>> resetPassword(String username, String newPassword) async {
     final response = await http.post(
       Uri.parse('$baseUrl/reset-password'),
