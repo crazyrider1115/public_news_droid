@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String? savedUsername = prefs.getString('saved_username');
     if (!mounted) return;
     if (savedUsername != null && savedUsername.isNotEmpty) {
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     }
   }
@@ -56,19 +57,27 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final response = await AuthService.signIn(username, password);
+    try {
+      final response = await AuthService.signIn(username, password);
 
-    if (response['success'] == true) {
-      if (_rememberMe) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('saved_username', username);
-      }
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
+
+      if (response['success'] == true) {
+        if (_rememberMe) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('saved_username', username);
+        }
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message'])),
+        );
+      }
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['message'])),
+        SnackBar(content: Text("Network error: $e")),
       );
     }
   }

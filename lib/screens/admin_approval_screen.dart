@@ -20,20 +20,42 @@ class _AdminApprovalScreenState extends State<AdminApprovalScreen> {
   }
 
   Future<void> loadPendingUsers() async {
-    final users = await AuthService.getPendingUsers();
-    setState(() {
-      pendingUsers = users;
-    });
+    try {
+      final users = await AuthService.getPendingUsers();
+      if (!mounted) return;
+      setState(() {
+        pendingUsers = users;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error loading users: $e")),
+      );
+    }
   }
 
   Future<void> approveUser(String username) async {
-    await AuthService.approveUser(username);
-    await loadPendingUsers();
+    try {
+      await AuthService.approveUser(username);
+      await loadPendingUsers();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error approving user: $e")),
+      );
+    }
   }
 
   Future<void> rejectUser(String username) async {
-    await AuthService.rejectUser(username);
-    await loadPendingUsers();
+    try {
+      await AuthService.rejectUser(username);
+      await loadPendingUsers();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error rejecting user: $e")),
+      );
+    }
   }
 
   @override

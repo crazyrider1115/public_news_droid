@@ -30,6 +30,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
 
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Email sent! (Simulated for Demo)")),
     );
