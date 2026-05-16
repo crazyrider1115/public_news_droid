@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
 import '../screens/home_screen.dart';
 import '../screens/find_news_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/profile_screen.dart';
+import '../screens/saved_news_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -16,15 +21,15 @@ class AppDrawer extends StatelessWidget {
 
           // 🔹 Drawer Header
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.newspaper, color: Colors.white, size: 40),
-                SizedBox(height: 10),
-                Text(
+                const Icon(Icons.newspaper, color: Colors.white, size: 40),
+                const SizedBox(height: 10),
+                const Text(
                   'Public News Droid',
                   style: TextStyle(
                     color: Colors.white,
@@ -37,24 +42,24 @@ class AppDrawer extends StatelessWidget {
 
           // 🏠 Home
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
             },
           ),
 
           // 🗂 Categories
           ListTile(
-            leading: Icon(Icons.category),
-            title: Text('Categories'),
+            leading: const Icon(Icons.category),
+            title: const Text('Categories'),
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => FindNewsScreen()),
+                MaterialPageRoute(builder: (context) => const FindNewsScreen()),
               );
             },
           ),
@@ -62,20 +67,20 @@ class AppDrawer extends StatelessWidget {
 
           // 🔖 Saved News
           ListTile(
-            leading: Icon(Icons.bookmark),
-            title: Text('Saved News'),
+            leading: const Icon(Icons.bookmark),
+            title: const Text('Saved News'),
             onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Saved News clicked')),
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SavedNewsScreen()),
               );
             },
           ),
 
           // 👤 Profile
           ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Profile'),
+            leading: const Icon(Icons.person),
+            title: const Text('Profile'),
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -84,16 +89,14 @@ class AppDrawer extends StatelessWidget {
             },
           ),
 
-          // ⚙️ Settings
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Settings clicked')),
-              );
-            },
+          // ⚙️ Dark Mode Switch
+          SwitchListTile(
+             secondary: Icon(themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode),
+             title: const Text('Dark Mode'),
+             value: themeProvider.isDarkMode,
+             onChanged: (value) {
+                themeProvider.toggleTheme(value);
+             },
           ),
 
           // ℹ️ About

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login_screen.dart';
 
 class AdminApprovalScreen extends StatefulWidget {
   const AdminApprovalScreen({super.key});
@@ -65,6 +67,22 @@ class _AdminApprovalScreenState extends State<AdminApprovalScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Admin Approval"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: "Logout",
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.clear();
+              if (!context.mounted) return;
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
 
       body: pendingUsers.isEmpty

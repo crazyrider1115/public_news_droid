@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String? savedUsername = prefs.getString('saved_username');
     if (!mounted) return;
     if (savedUsername != null && savedUsername.isNotEmpty) {
+      await prefs.setString('current_username', savedUsername);
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     }
@@ -63,8 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (response['success'] == true) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('current_username', username);
         if (_rememberMe) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('saved_username', username);
         }
         if (!mounted) return;

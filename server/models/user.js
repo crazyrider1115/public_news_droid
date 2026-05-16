@@ -10,6 +10,14 @@ const userSchema = new mongoose.Schema({
   approved: {
     type: Boolean,
     default: false
+  },
+  profilePicture: {
+    type: String,
+    default: ""
+  },
+  savedNews: {
+    type: Array,
+    default: []
   }
 });
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "698593376113",
+    "project_id": "public-news-droid-26",
+    "storage_bucket": "public-news-droid-26.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698593376113:android:eee3074978fbef1fbc28d0",
+        "android_client_info": {
+          "package_name": "com.example.public_news_droid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4RBJzWVUY6QA6zVNEJHEtM0k-JMEdN68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

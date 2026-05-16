@@ -107,4 +107,87 @@ router.post("/reject", async (req, res) => {
   res.json({ success: true });
 });
 
+/* ---------- UPDATE PROFILE PICTURE ---------- */
+router.post("/update-profile-picture", async (req, res) => {
+  try {
+    const { username, profilePicture } = req.body;
+    await User.updateOne({ username }, { profilePicture });
+    res.json({ success: true, message: "Profile picture updated" });
+  } catch (err) {
+    res.json({ success: false });
+  }
+});
+
+/* ---------- DELETE PROFILE PICTURE ---------- */
+router.post("/delete-profile-picture", async (req, res) => {
+  try {
+    const { username } = req.body;
+    await User.updateOne({ username }, { profilePicture: "" });
+    res.json({ success: true, message: "Profile picture deleted" });
+  } catch (err) {
+    res.json({ success: false });
+  }
+});
+
+/* ---------- UPDATE PROFILE DETAILS ---------- */
+router.post("/update-profile", async (req, res) => {
+  try {
+    const { currentUsername, newUsername, newName } = req.body;
+    
+    if (currentUsername !== newUsername) {
+      const exists = await User.findOne({ username: newUsername });
+      if (exists) {
+        return res.json({ success: false, message: "Username already taken" });
+      }
+    }
+    
+    await User.updateOne({ username: currentUsername }, { username: newUsername, name: newName });
+    res.json({ success: true, message: "Profile updated successfully", newUsername });
+  } catch (err) {
+    res.json({ success: false, message: "Error updating profile" });
+  }
+});
+
+/* ---------- DELETE ACCOUNT ---------- */
+router.post("/delete-account", async (req, res) => {
+  try {
+    const { username } = req.body;
+    await User.deleteOne({ username });
+    res.json({ success: true, message: "Account deleted" });
+  } catch (err) {
+    res.json({ success: false });
+  }
+});
+
+/* ---------- GET USER PROFILE ---------- */
+router.post("/profile", async (req, res) => {
+  console.log("PROFILE FETCH REQUEST:", req.body);
+  try {
+    const { username } = req.body;
+    if (!username) {
+      console.log("PROFILE ERROR: No username provided");
+      return res.status(400).json({ success: false, message: "Username required" });
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      console.log("PROFILE ERROR: User not found:", username);
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    console.log("PROFILE FOUND FOR:", username);
+    res.json({
+      success: true,
+      user: {
+        username: user.username,
+        name: user.name,
+        profilePicture: user.profilePicture || ""
+      }
+    });
+  } catch (err) {
+    console.error("PROFILE FETCH ERROR:", err.message);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

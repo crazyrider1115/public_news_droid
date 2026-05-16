@@ -7,20 +7,48 @@ router.get("/top", async (req, res) => {
   try {
     const { category } = req.query;
 
-    const response = await axios.get(
-      "https://newsdata.io/api/1/news",
-      {
-        params: {
-          apikey: process.env.NEWS_API_KEY,
-          language: "en",
-          category: category === "all" ? undefined : (category || "top"), // ✅ FILTER FIX
-        },
-      }
-    );
+    let articles = [];
 
-    const results = response.data.results || [];
+    if (category === "all" || !category) {
+      // Fetch a mix of categories for "All"
+      const categories = ["top", "technology", "sports", "business", "science"];
+      const promises = categories.map(cat => 
+        axios.get("https://newsdata.io/api/1/news", {
+          params: {
+            apikey: process.env.NEWS_API_KEY,
+            language: "en",
+            category: cat,
+            size: 5, // Get 5 from each
+          },
+        })
+      );
 
-    const articles = results.map(a => ({
+      const results = await Promise.allSettled(promises);
+      results.forEach(res => {
+        if (res.status === "fulfilled" && res.value.data.results) {
+          articles = [...articles, ...res.value.data.results];
+        }
+      });
+      
+      // Shuffle the combined list
+      articles = articles.sort(() => Math.random() - 0.5);
+    } else {
+      // Single category fetch
+      const response = await axios.get(
+        "https://newsdata.io/api/1/news",
+        {
+          params: {
+            apikey: process.env.NEWS_API_KEY,
+            language: "en",
+            category: category,
+            size: 15,
+          },
+        }
+      );
+      articles = response.data.results || [];
+    }
+
+    const formattedArticles = articles.map(a => ({
       title: a.title,
       description: a.description,
       url: a.link,
@@ -31,11 +59,11 @@ router.get("/top", async (req, res) => {
 
     res.json({
       status: "ok",
-      articles,
+      articles: formattedArticles,
     });
 
   } catch (err) {
-    console.error(err.response?.data || err.message);
+    console.error("NEWS FETCH ERROR:", err.response?.data || err.message);
 
     res.status(200).json({
       status: "ok",

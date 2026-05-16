@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/news_tile.dart';
 import '../services/news_api_service.dart';
+import '../services/user_data_service.dart';
 import 'find_news_screen.dart';
-import 'news_detail_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,6 +16,36 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Public News Droid'),
         actions: [
+          FutureBuilder<Map<String, dynamic>>(
+            future: UserDataService.getProfile(),
+            builder: (context, snapshot) {
+              String? base64Image;
+              if (snapshot.hasData && snapshot.data!['success'] == true) {
+                base64Image = snapshot.data!['user']['profilePicture'];
+              }
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    backgroundImage: (base64Image != null && base64Image.isNotEmpty)
+                        ? MemoryImage(base64Decode(base64Image.split(',').last))
+                        : null,
+                    radius: 18,
+                    child: (base64Image == null || base64Image.isEmpty)
+                        ? const Icon(Icons.person, color: Colors.white)
+                        : null,
+                  ),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: () {
@@ -26,9 +59,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-
-      drawer: AppDrawer(),
-
+      drawer: const AppDrawer(),
       body: FutureBuilder<List<dynamic>>(
         future: NewsApiService.fetchTopHeadlines(),
         builder: (context, snapshot) {
@@ -53,69 +84,17 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final article = articles[index];
 
-              final imageUrl =
-                  article['urlToImage'] ?? article['image'];
-
-              return GestureDetector(
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => NewsDetailScreen(article: article),
-      ),
-    );
-  },
-  child: Card(
-    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-    elevation: 4,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(15),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(15)),
-          child: Image.network(
-            imageUrl ?? "https://via.placeholder.com/300",
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-        ),
-
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 📰 TITLE
-              Text(
-                article['title'] ?? 'No title',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 6),
-
-              // 🏷 PROVIDER
-              Text(
-                article['source'] ?? 'News Source',
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  ),
-);
+              return NewsTile(
+                article: article,
+                initialSaved: false, // Wait until we check backend if needed, for now standard feed
+                onSaveToggle: (isSaved) {
+                  if (isSaved) {
+                    UserDataService.saveNews(article);
+                  } else {
+                    UserDataService.unsaveNews(article['link'] ?? article['url']);
+                  }
+                },
+              );
             },
           );
         },

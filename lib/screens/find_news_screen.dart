@@ -3,7 +3,8 @@ import '../widgets/category_filter.dart';
 import '../widgets/date_filter.dart';
 import '../widgets/app_drawer.dart';
 import '../services/news_api_service.dart';
-import 'news_detail_screen.dart';
+import '../widgets/news_tile.dart';
+import '../services/user_data_service.dart';
 
 class FindNewsScreen extends StatefulWidget {
   const FindNewsScreen({super.key});
@@ -38,7 +39,7 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
       appBar: AppBar(
         title: const Text('Find News'),
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -87,65 +88,26 @@ class _FindNewsScreenState extends State<FindNewsScreen> {
                           return const Center(child: Text('No news found'));
                         }
 
+                        // Jumble the feed if it's the "All" category
+                        if (selectedCategory.toLowerCase() == 'all') {
+                          articles.shuffle();
+                        }
+
                         return ListView.builder(
                           itemCount: articles.length,
                           itemBuilder: (context, index) {
                             final article = articles[index];
-                            final imageUrl = article['urlToImage'] ?? article['image'];
 
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => NewsDetailScreen(article: article),
-                                  ),
-                                );
+                            return NewsTile(
+                              article: article,
+                              initialSaved: false,
+                              onSaveToggle: (isSaved) {
+                                if (isSaved) {
+                                  UserDataService.saveNews(article);
+                                } else {
+                                  UserDataService.unsaveNews(article['link'] ?? article['url']);
+                                }
                               },
-                              child: Card(
-                                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-                                      child: Image.network(
-                                        imageUrl ?? "https://via.placeholder.com/300",
-                                        height: 200,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(12),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            article['title'] ?? 'No title',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 6),
-                                          Text(
-                                            article['source'] ?? 'News Source',
-                                            style: const TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             );
                           },
                         );
