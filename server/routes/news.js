@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/top", async (req, res) => {
   try {
-    const { category } = req.query;
+    const { category, date } = req.query;
 
     let articles = [];
 
@@ -41,14 +41,14 @@ router.get("/top", async (req, res) => {
             apikey: process.env.NEWS_API_KEY,
             language: "en",
             category: category,
-            size: 15,
+            size: 10,
           },
         }
       );
       articles = response.data.results || [];
     }
 
-    const formattedArticles = articles.map(a => ({
+    let formattedArticles = articles.map(a => ({
       title: a.title,
       description: a.description,
       url: a.link,
@@ -56,6 +56,13 @@ router.get("/top", async (req, res) => {
       publishedAt: a.pubDate,
       source: a.source_id || a.source_name || "Unknown",
     }));
+
+    if (date) {
+      formattedArticles = formattedArticles.filter(a => {
+        if (!a.publishedAt) return false;
+        return a.publishedAt.startsWith(date);
+      });
+    }
 
     res.json({
       status: "ok",
